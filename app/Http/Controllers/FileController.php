@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
+use App\Http\Requests\UploadFileRequest;
 
+use App\Services\FileService;
 class FileController extends Controller
 {
-    public function download()
+    public function upload(UploadFileRequest $request, FileService $service)
     {
-    	$path = public_path('file.zip');
-    	$fileName = 'file.zip';
-        $headers = ['Content-Type: application/zip'];
-    	return Response::download($path, $fileName,$headers );
+        // $folder = uniqid() . '-' . now()->timestamp;
+        
+        $response = $service->upload($request->dto);
+
+        return response()->json($response);
+
     }
 }
