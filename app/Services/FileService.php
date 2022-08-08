@@ -10,11 +10,14 @@ use Illuminate\Support\Facades\Auth;
 
 class FileService
 {
-    public function upload(UploadFileRequestDTO $dto)
+    public function upload(
+        UploadFileRequestDTO $dto,
+        int $userID
+        ):object
     {
         $file = File::create([
             'name' => $dto->name,
-            'user_id' => Auth::id()
+            'user_id' => $userID
         ]);
 
         return $file;
