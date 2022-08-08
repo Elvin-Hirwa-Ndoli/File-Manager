@@ -12,12 +12,12 @@ class FileService
 {
     public function upload(
         UploadFileRequestDTO $dto,
-        int $user
+        int $userID
         ):object
     {
         $file = File::create([
             'name' => $dto->name,
-            'user_id' => $user
+            'user_id' => $userID
         ]);
 
         return $file;
