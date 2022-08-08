@@ -20,10 +20,17 @@ it("test if can store file path and userID as expected", function(){
         "user_id"=>$this->user->id
     ]);
 
-    $a = new UploadFileRequestDTO(["name" => $file->name]);
+    $fileDTO = new UploadFileRequestDTO(["name" => $file->name]);
 
-    $response = $this->service->upload($a,$this->user->id);
+    // dd($fileDTO);
+
+    $response = $this->service->upload($fileDTO,$this->user->id);
 
     expect($response)->toBeObject();
+    expect($this->user->id)->toBeInt();
+    expect($fileDTO)->toBeObject();
+    $this->assertDatabaseHas('files', [
+        'name' => $file->name
+    ]);
 
 });
