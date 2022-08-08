@@ -31,4 +31,12 @@ class FileService
         return $path;
     
     }
+
+    public function destroy($id){
+        $file = File::where('id', $id)->firstOrFail();
+        $path=storage_path().'/Docs/'.$file->name;
+        
+        return $path;
+    
+    }
 }

@@ -27,5 +27,10 @@ class FileController extends Controller
     {     $response = $service -> download($path);
         return response()->download($response);
       }  
+
+      public function delete(FileService $service, $path)
+    {     $response = $service -> delete($path);
+        return response()->delete($response);
+      }  
     
 }
