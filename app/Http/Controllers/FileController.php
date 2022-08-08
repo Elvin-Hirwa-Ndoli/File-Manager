@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UploadFileRequest;
-
+use App\Models\File;
 use App\Services\FileService;
 class FileController extends Controller
 {
@@ -16,4 +16,10 @@ class FileController extends Controller
         return response()->json($response);
 
     }
+
+    public function download(FileService $service, $path)
+    {     $response = $service -> download($path);
+        return response()->download($response);
+      }  
+    
 }
