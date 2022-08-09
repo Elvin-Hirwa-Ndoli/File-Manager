@@ -5,12 +5,15 @@ declare(strict_types=1);
 use App\DTOs\LoginRequestDTO;
 use App\Models\User;
 use App\Services\AuthService;
+use Illuminate\Support\Facades\Auth;
 
 beforeEach(function () {
     $this->service = new AuthService;
 
     $this->user = User::factory()->create();
 });
+
+
 
 it('test if can throw an Exception while passed data are not match', function ($email, $password) {
 
@@ -46,3 +49,16 @@ it('test if can return token while passed data are match', function () {
     
 });
 
+
+
+it('test if can logout and Delete token', function(){
+
+    $this->user->createToken('auth_token_kfkldjglkfdlkdfjdlkf');
+
+    Auth::setUser($this->user);
+
+    $response = $this->service->logout();
+
+    expect($response)->toBeTrue()->and(Auth::user()->tokens()->count())->toBe(0);
+
+});

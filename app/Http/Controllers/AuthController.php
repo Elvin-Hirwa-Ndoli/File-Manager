@@ -19,9 +19,6 @@ class AuthController extends Controller
         return response()->json($user, 201);
     }
 
-
-
-
     public function login(LoginRequest $request, AuthService $service):object
     {
         try{
@@ -37,8 +34,6 @@ class AuthController extends Controller
 
         return response()->json($response, 201);
     }
-
-
 
 
     public function logout(AuthService $service):object 

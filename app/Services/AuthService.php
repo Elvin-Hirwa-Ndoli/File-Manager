@@ -37,16 +37,15 @@ class AuthService
         }
 
         $token = $user->createToken('myapptoken')->plainTextToken;
-
+        
         return $token;
     }
 
 
-    public function logout(): array
+    public function logout(): bool
     {
         auth()->user()->tokens()->delete();
-        return [
-            'message' => 'Logged out'
-        ];
+
+        return true;
     }
 }
