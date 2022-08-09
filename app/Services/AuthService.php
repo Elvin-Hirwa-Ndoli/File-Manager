@@ -7,6 +7,7 @@ namespace App\Services;
 use App\DTOs\CreateUserRequestDTO;
 use App\DTOs\LoginRequestDTO;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
@@ -30,9 +31,9 @@ class AuthService
 
         // Check password
         if (!$user || !Hash::check($dto->password, $user->password)) {
-            return response([
-                'message' => 'Invalid credentials'
-            ], 401);
+            
+            throw new ModelNotFoundException("Invalid credentials");
+            
         }
 
         $token = $user->createToken('myapptoken')->plainTextToken;

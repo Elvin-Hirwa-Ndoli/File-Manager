@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Services\AuthService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AuthController extends Controller
 {
@@ -23,7 +24,16 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request, AuthService $service):object
     {
-        $response = $service->Login($request->dto);
+        try{
+            $response = $service->Login($request->dto);
+
+        }catch(ModelNotFoundException $exception){
+            return response([
+                'message' =>  $exception->getMessage()
+            ], 401);
+        }
+        
+        
 
         return response()->json($response, 201);
     }
@@ -38,3 +48,16 @@ class AuthController extends Controller
         return response()->json($response);
     }
 }
+
+
+
+// try{
+    //
+// }
+// dd(get_class($exception));
+// catch{
+    // return ...
+// }
+// catch{
+    // return ....
+// }
