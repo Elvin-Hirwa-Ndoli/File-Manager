@@ -23,7 +23,7 @@ class FileFactory extends Factory
             "name"=>$this->faker->name(),
             "size"=>$this->faker->numberBetween(0,1000),
             "extension"=>$this->faker->fileExtension(),
-            "user_id"=>User::inRandomOrder()->first()->id
+            "user_id"=>User::inRandomOrder()->first()->id,
         ];
     }
 }
