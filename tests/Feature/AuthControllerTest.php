@@ -1,22 +1,29 @@
 <?php
 
-declare(strict_types = 1);
 
-use App\Models\User;
+use App\DTOs\CreateUserRequestDTO;
+use Illuminate\Support\Facades\Hash;
 
-beforeEach(function () {
+it('can user be registed', function () {
+    $faker = Faker\Factory::create();
+    $name = $faker->name();
+    $email = $faker->email();
+    $password = Hash::make('password');
 
-    $this->user = User::factory()->create();
-});
-
-
-
-it('it test if a user can login and return token', function(){
-
-    $response = $this->postJson('/api/login', [
-        'email' => $this->user->email,
-        'password' => "password"
+    $res=new CreateUserRequestDTO([
+        'name' => $name,
+        'email' => $email,
+        'password' => $password
     ]);
+
+
+    $response = $this->postJson('/api/register', [
+        'name' => $res->name,
+        'email' => $res->email,
+        'password' => $res->password,
+        'password_confirmation' => $password
+    ]);
+
 
 
     expect($response->json())->toBeString();
@@ -42,5 +49,4 @@ it('it test if a user can logout and return true status code', function(){
     $response->assertStatus(201);
 
 });
-
 
