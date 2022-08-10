@@ -40,9 +40,9 @@ class AuthController extends Controller
 
     public function logout(AuthService $service):object 
     {
-        $response = $service->logout();
+        $loggedOut = $service->logout();
 
-        return response()->json($response);
+        return response()->json($loggedOut,201);
     }
 }
 

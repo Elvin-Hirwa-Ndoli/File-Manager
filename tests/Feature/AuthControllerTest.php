@@ -18,34 +18,29 @@ it('it test if a user can login and return token', function(){
         'password' => "password"
     ]);
 
-    // dd($response->json());
 
     expect($response->json())->toBeString();
     $response->assertStatus(201);
 
 });
 
-// it('test if can throw an Exception if if credentials are invalid', function($email,$password){
-
-//     $response = $this->postJson('/api/login', [
-//         'email' => $email,
-//         'password' => $password
-//     ]);
-
-//     expect($response->json())->toBeString();
-//     $response->assertStatus(401);
-
-// })->with(
-//     [
-//         [
-//             "elvinhirwa@gmail.com",
-//             "danger"
-//         ],
-//         [
-//             "elhirwa32@gmail.com",
-//             "123458"
-//         ]
 
 
-//     ]
-// );
+it('it test if a user can logout and return true status code', function(){
+
+    $token = $this->postJson('/api/login', [
+        'email' => $this->user->email,
+        'password' => "password"
+    ]);
+    $finalToken = $token->json();
+
+    // dd($finalToken);
+
+    $response = $this->withHeaders(['Authorization' => "Bearer $finalToken"])->postJson("/api/logout");
+
+    expect($response->json())->toBeTrue();
+    $response->assertStatus(201);
+
+});
+
+

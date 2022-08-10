@@ -34,4 +34,13 @@ class FileService
 
         return $file;
     }
+
+
+
+    public function list(int $userID)
+    {
+        $file = File::where('user_id', $userID)->paginate(2);
+
+        return $file;
+    }
 }

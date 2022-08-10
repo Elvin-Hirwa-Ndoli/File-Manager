@@ -1,35 +1,85 @@
 <?php
 
-// declare(strict_types = 1);
+declare(strict_types=1);
 
-// use App\DTOs\UploadFileRequestDTO;
-// use App\Models\File;
-// use App\Models\User;
-// use App\Services\FileService;
+use App\DTOs\UploadFileRequestDTO;
+use App\Models\File;
+use App\Models\User;
+use App\Services\FileService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
-// beforeEach(function () {
+beforeEach(function () {
 
-//     $this->user = User::factory()->create();
+    $this->user = User::factory()->create();
 
-//     $this->service = new FileService;
-// });
+    $this->service = new FileService;
+});
 
 
-// it("test if can store file path and userID as expected", function(){
-//     $file = File::factory()->create([
-//         "user_id"=>$this->user->id
-//     ]);
+it("test if can store file path and userID as expected", function(){
+    $file = File::factory()->create([
+        "user_id"=>$this->user->id
+    ]);
 
-//     $fileDTO = new UploadFileRequestDTO(["name" => $file->name]);
+    Storage::fake('local');
 
-//     $response = $this->service->upload($fileDTO,$this->user->id);
+    $fakedFile = UploadedFile::fake()->create('quiz4.doc', 100);
 
-//     expect($response)->toBeObject();
-//     expect($this->user->id)->toBeInt();
-//     expect($fileDTO)->toBeObject();
-//     $this->assertDatabaseHas('files', [
-//         'name' => $file->name,
-//         'user_id'=>$this->user->id
-//     ]);
+    $fileDTO = new UploadFileRequestDTO(["file" => $fakedFile]);
 
-// });
+    $this->service->upload($fileDTO,$this->user->id);
+
+
+    $this->assertDatabaseHas('files', [
+        'path' => $file->path,
+        'name' => $file->name,
+        'size' => $file->size,
+        'extension' => $file->extension,        
+        'user_id'=>$this->user->id
+    ]);
+
+});
+
+
+it('test if can list all files in DataBase and return as Expected',   function () {
+
+    File::factory()->create();
+
+    $fileLIst = $this->service->list($this->user->id);
+
+    // dd($fileLIst->toArray());
+
+
+    expect($fileLIst)->toHaveKeys([
+        "current_page",
+        "data",
+        "first_page_url",
+        "from",
+        "last_page",
+        "last_page_url",
+        "links",
+        "next_page_url",
+        "path",
+        "per_page",
+        "prev_page_url",
+        "to",
+        "total"
+    ]);
+//     // expect($fileLIst)->sequence(
+
+//     //     fn ($value, $key) => $value->toBeInt(),
+//     //     fn ($value, $key) => $value->toBeArray(),
+//     //     fn ($value, $key) => $value->toBeString(),
+//     //     fn ($value, $key) => $value->toBeInt(),
+//     //     fn ($value, $key) => $value->toBeInt(),
+//     //     fn ($value, $key) => $value->toBeString(),
+//     //     fn ($value, $key) => $value->toBeArray(),
+//     //     fn ($value, $key) => $value->toBeString(),
+//     //     fn ($value, $key) => $value->toBeString(),
+//     //     fn ($value, $key) => $value->toBeInt(),
+//     //     fn ($value, $key) => $value->toBeString(),
+//     //     fn ($value, $key) => $value->toBeInt(),
+//     //     fn ($value, $key) => $value->toBeInt()
+//     // );
+});
