@@ -1,5 +1,6 @@
 <?php
 
+
 use App\DTOs\CreateUserRequestDTO;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,4 +25,4 @@ it('can user be registed', function () {
     ]);
 
     $response->assertStatus(201);
-})->only();
+});

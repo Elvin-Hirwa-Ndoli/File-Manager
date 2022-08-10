@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Models\File;
 use App\Models\User;
 use Illuminate\Http\Testing\File as TestingFile;
@@ -54,4 +55,4 @@ it('ican delete file?', function(){
 
 
 
-})->only();
+});
