@@ -26,3 +26,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('/upload', [FileController::class, 'upload'])->middleware('auth:sanctum');
+Route::get('/list', [FileController::class, 'listFile'])->middleware('auth:sanctum');
