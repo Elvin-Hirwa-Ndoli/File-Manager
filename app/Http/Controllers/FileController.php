@@ -41,6 +41,6 @@ class FileController extends Controller
 
         $old_file =  File::where('id', $id)->first();
 
-        $path = $old_file->name;
+        $path = $old_file;
     }
 }
