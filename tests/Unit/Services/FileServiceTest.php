@@ -1,12 +1,14 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use App\DTOs\EditFileRequestDTO;
-use App\DTOs\UploadFileRequestDTO;
+use App\DTOs\RenameFileRequestDTO;
 use App\Models\File;
 use App\Models\User;
 use App\Services\FileService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
 
@@ -15,45 +17,44 @@ beforeEach(function () {
     $this->service = new FileService;
 });
 
-
-it("test if can store file path and userID as expected", function(){
+it("test if the  user can rename file", function () {
     $file = File::factory()->create([
-        "user_id"=>$this->user->id
+        "user_id" => $this->user->id
     ]);
 
-    $fileDTO = new UploadFileRequestDTO(["name" => $file->name]);
+    $name = 'cheatsheet';
 
-    // dd($fileDTO);
+    $fileDTO = new RenameFileRequestDTO(["name" => $name]);
 
-    $response = $this->service->upload($fileDTO,$this->user->id);
 
-    expect($response)->toBeObject();
-    expect($this->user->id)->toBeInt();
-    expect($fileDTO)->toBeObject();
-    $this->assertDatabaseHas('files', [
-        'name' => $file->name
-    ]);
+    $response = $this->service->Rename($file->id, $fileDTO);
 
+    expect($response)
+        ->toBeArray()
+        ->toHaveKey(0);
+        $this->assertDatabaseHas('files', ["name"=>'cheatsheet']);
 });
 
 
 
-it("test if the user can update the uploaded file", function(){
+it("test if user can update the file ", function(){
     $file = File::factory()->create([
         "user_id"=>$this->user->id
     ]);
 
-    $fileDTO = new EditFileRequestDTO(["name" => $file->name]);
+    Storage::fake('local');
 
-    // dd($fileDTO);
+    $File = UploadedFile::fake()->create('test.pdf', 100);
 
-    $response = $this->service->upload($fileDTO,$this->user->id);
+    $fileDTO = new EditFileRequestDTO(["file" => $File]);
 
-    expect($response)->toBeObject();
-    expect($this->user->id)->toBeInt();
-    expect($fileDTO)->toBeObject();
-    $this->assertDatabaseHas('files', [
-        'name' => $file->name
-    ]);
+   $response = $this->service->edit($file->id, $fileDTO);
 
-});
+   expect($response)->toBeTrue();
+
+})->only();
+
+
+
+
+
