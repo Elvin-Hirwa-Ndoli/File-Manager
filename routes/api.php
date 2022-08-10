@@ -26,3 +26,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('/upload', [FileController::class, 'upload'])->middleware('auth:sanctum');
+Route::post('/edit/{id}', [FileController::class,'edit']);
+Route::get('/rename/{id}', [FileController::class,'rename']);
