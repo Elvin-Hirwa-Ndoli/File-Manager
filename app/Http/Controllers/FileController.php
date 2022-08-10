@@ -5,28 +5,23 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UploadFileRequest;
-use App\Models\File;
 use App\Services\FileService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;;
 
 class FileController extends Controller
 {
-    public function upload(UploadFileRequest $request, FileService $service) /*object*/
+    public function upload(UploadFileRequest $request, FileService $service)
     {
-
         $userID = Auth::id();
 
-        $response = $service->upload($request->dto, $userID);
+        $uploded = $service->upload($request->dto, $userID);
 
-        return response()->json($response);
+        return response()->json($uploded);
     }
 
     public function listFile()
 
     {
-      
+
     }
 }

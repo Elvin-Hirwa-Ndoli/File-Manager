@@ -15,10 +15,21 @@ class FileService
         int $userID
         ):File
     {
+        $name = $dto->file->getClientOriginalName();
+
+        $extension = $dto->file->getClientOriginalExtension();
+
+        $size = $dto->file->getSize();
+
         $path = $dto->file->store('MyDocument');
+        
         $file = File::create([
-            'name' => $path,
-            'user_id' => $userID
+            'path' => $path,
+            'name' => $name,
+            'extension' => $extension,
+            'size' => $size,
+            'user_id' => $userID,
+            
         ]);
 
         return $file;
