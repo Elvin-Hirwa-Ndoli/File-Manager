@@ -28,7 +28,7 @@ class UploadFileRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|file|max:100000|mimes:docx,doc,odt,pdf'
+            'file' => 'required|file|max:100000|mimes:docx,doc,odt,pdf'
         ];
     }
 
@@ -37,7 +37,7 @@ class UploadFileRequest extends FormRequest
         
          $validated = $this->validated();
         $this->dto = new UploadFileRequestDTO([
-            "name"=> $validated['name']->store('MyDocument')
+            "file"=> $validated['file']
         ]);
     }
 }

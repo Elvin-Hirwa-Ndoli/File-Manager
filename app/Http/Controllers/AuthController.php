@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvalidCredentialException;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Services\AuthService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
@@ -18,17 +21,21 @@ class AuthController extends Controller
         return response()->json($user, 201);
     }
 
-
-
-
-    public function login(LoginRequest $request, AuthService $service):object
+    public function login(LoginRequest $request, AuthService $service):JsonResponse
     {
-        $response = $service->Login($request->dto);
+        try{
+            $token = $service->login($request->dto);
 
-        return response()->json($response, 201);
+        }catch(InvalidCredentialException $exception){
+            return response([
+                'message' =>  $exception->getMessage()
+            ], 401);
+        }
+        
+        
+
+        return response()->json($token, 201);
     }
-
-
 
 
     public function logout(AuthService $service):object 
@@ -38,3 +45,16 @@ class AuthController extends Controller
         return response()->json($response);
     }
 }
+
+
+
+// try{
+    //
+// }
+// dd(get_class($exception));
+// catch{
+    // return ...
+// }
+// catch{
+    // return ....
+// }

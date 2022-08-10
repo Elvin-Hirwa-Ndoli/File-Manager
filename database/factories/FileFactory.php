@@ -19,7 +19,10 @@ class FileFactory extends Factory
     public function definition()
     {
         return [
-            "name"=>$this->faker->url(),
+            "path"=>$this->faker->url(),
+            "name"=>$this->faker->name(),
+            "size"=>$this->faker->numberBetween(0,1000),
+            "extension"=>$this->faker->fileExtension(),
             "user_id"=>User::inRandomOrder()->first()->id
         ];
     }
