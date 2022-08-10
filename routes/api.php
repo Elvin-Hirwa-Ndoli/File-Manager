@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Laravel\Sanctum\Sanctum;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +25,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('/upload', [FileController::class, 'upload'])->middleware('auth:sanctum');
+<<<<<<< HEAD
 Route::get('/list', [FileController::class, 'listFile'])->middleware('auth:sanctum');
+=======
+
+Route::get('/download/{id}', [FileController::class, 'download'])->middleware('auth:sanctum')->whereNumber('id');
+Route::delete('/delete/{id}', [FileController::class, 'destroy'])-> middleware('auth:sanctum')->whereNumber("id");
+>>>>>>> files

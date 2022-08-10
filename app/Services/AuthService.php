@@ -14,13 +14,14 @@ class AuthService
 {
     public function registerUser(
         CreateUserRequestDTO $dto
+
     ): User {
+
         $user = User::create([
             'name' => $dto->name,
             'email' => $dto->email,
             'password' => Hash::make($dto->password)
         ]);
-        
 
         return $user;
     }
