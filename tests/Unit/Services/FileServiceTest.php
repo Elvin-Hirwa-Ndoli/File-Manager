@@ -1,35 +1,60 @@
 <?php
 
-// declare(strict_types = 1);
+declare(strict_types=1);
 
-// use App\DTOs\UploadFileRequestDTO;
-// use App\Models\File;
-// use App\Models\User;
-// use App\Services\FileService;
+use App\DTOs\EditFileRequestDTO;
+use App\DTOs\RenameFileRequestDTO;
+use App\Models\File;
+use App\Models\User;
+use App\Services\FileService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
-// beforeEach(function () {
+beforeEach(function () {
 
-//     $this->user = User::factory()->create();
+    $this->user = User::factory()->create();
 
-//     $this->service = new FileService;
-// });
+    $this->service = new FileService;
+});
+
+it("test if the  user can rename file", function () {
+    $file = File::factory()->create([
+        "user_id" => $this->user->id
+    ]);
+
+    $name = 'cheatsheet';
+
+    $fileDTO = new RenameFileRequestDTO(["name" => $name]);
 
 
-// it("test if can store file path and userID as expected", function(){
-//     $file = File::factory()->create([
-//         "user_id"=>$this->user->id
-//     ]);
+    $response = $this->service->Rename($file->id, $fileDTO);
 
-//     $fileDTO = new UploadFileRequestDTO(["name" => $file->name]);
+    expect($response)
+        ->toBeArray()
+        ->toHaveKey(0);
+        $this->assertDatabaseHas('files', ["name"=>'cheatsheet']);
+});
 
-//     $response = $this->service->upload($fileDTO,$this->user->id);
 
-//     expect($response)->toBeObject();
-//     expect($this->user->id)->toBeInt();
-//     expect($fileDTO)->toBeObject();
-//     $this->assertDatabaseHas('files', [
-//         'name' => $file->name,
-//         'user_id'=>$this->user->id
-//     ]);
 
-// });
+it("test if user can update the file ", function(){
+    $file = File::factory()->create([
+        "user_id"=>$this->user->id
+    ]);
+
+    Storage::fake('local');
+
+    $File = UploadedFile::fake()->create('test.pdf', 100);
+
+    $fileDTO = new EditFileRequestDTO(["file" => $File]);
+
+   $response = $this->service->edit($file->id, $fileDTO);
+
+   expect($response)->toBeTrue();
+
+})->only();
+
+
+
+
+
