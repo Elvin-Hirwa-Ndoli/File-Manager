@@ -14,23 +14,27 @@ class AuthService
 {
     public function registerUser(
         CreateUserRequestDTO $dto
-    ): object {
+    ): User {
         $user = User::create([
             'name' => $dto->name,
             'email' => $dto->email,
-            'password' => bcrypt($dto->password)
+            'password' => Hash::make($dto->password)
         ]);
+        
 
         return $user;
     }
 
-    public function Login(
+    /**
+     * @throws Exception
+     */
+    public function login(
         LoginRequestDTO $dto
     ): string {
         $user = User::where('email', $dto->email)->first();
 
         // Check password
-        if (!$user || !Hash::check($dto->password, $user->password)) {
+        if ( is_null($user) || !Hash::check($dto->password, $user->password)) {
             
             throw new ModelNotFoundException("Invalid credentials");
             

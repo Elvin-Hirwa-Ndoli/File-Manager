@@ -13,10 +13,11 @@ class FileService
     public function upload(
         UploadFileRequestDTO $dto,
         int $userID
-        ):object
+        ):File
     {
+        $path = $dto->file->store('MyDocument');
         $file = File::create([
-            'name' => $dto->name,
+            'name' => $path,
             'user_id' => $userID
         ]);
 
