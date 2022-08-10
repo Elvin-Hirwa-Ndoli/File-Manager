@@ -1,18 +1,38 @@
 <?php
 
-namespace Tests\Unit\Services;
+use App\DTOs\CreateUserRequestDTO;
+use App\Models\User;
+use App\Services\AuthService;
+use Illuminate\Support\Facades\Hash;
 
-use PHPUnit\Framework\TestCase;
+beforeEach(function () {
+    $this->service = new AuthService;
+});
 
-class AuthServiceTest extends TestCase
-{
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $this->assertTrue(true);
-    }
-}
+
+it('test if can do register user', function(){
+    
+
+    $faker = Faker\Factory::create();
+    $name = $faker->name();
+    $email = $faker->email();
+    $password = Hash::make('password');
+    $userDTO = new CreateUserRequestDTO([ 
+        'name' => $name,
+            'email' => $email,
+            'password' =>$password
+     ]);
+
+    $response = $this->service->registerUser($userDTO);
+    
+    expect($response)->toBeInstanceOf(User::class);
+
+    $this->assertDatabaseHas((new User())->getTable(), [
+        "name" => $name,
+        "email" => $email
+    ]);
+    
+})->only();
+
+
+

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/c', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();   
@@ -26,5 +26,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('/upload', [FileController::class, 'upload'])->middleware('auth:sanctum');
 
-Route::get('/download/{id}', [FileController::class, 'download'])->middleware('auth:sanctum');
-Route::get('/delete{id}', [FileController::class, 'destroy'])->middleware('auth:sanctum');
+Route::get('/download/{id}', [FileController::class, 'download'])->middleware('auth:sanctum')->whereNumber('id');
+Route::delete('/delete/{id}', [FileController::class, 'destroy'])-> middleware('auth:sanctum')->whereNumber("id");

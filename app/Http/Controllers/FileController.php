@@ -11,26 +11,28 @@ use Illuminate\Support\Facades\Auth;
 
 class FileController extends Controller
 {
-    public function upload(UploadFileRequest $request, FileService $service):object
-    {
-        // $folder = uniqid() . '-' . now()->timestamp;
-        
-        $userID = Auth::id();
-        
-        $response = $service->upload($request->dto,$userID);
+  public function upload(UploadFileRequest $request, FileService $service): object
+  {
+    // $folder = uniqid() . '-' . now()->timestamp;
 
-        return response()->json($response);
+    $userID = Auth::id();
 
-    }
+    $response = $service->upload($request->dto, $userID);
 
-    public function download(FileService $service, $path)
-    {     $response = $service -> download($path);
-        return response()->download($response);
-      }  
+    return response()->json($response);
+  }
 
-      public function delete(FileService $service, $path)
-    {     $response = $service -> delete($path);
-        return response()->delete($response);
-      }  
-    
+  public function download(FileService $service, int $id)
+  {
+    $response = $service->download($id);
+
+    return $response;
+  }
+
+  public function destroy(FileService $service,int $id)
+  {
+    $response = $service->destroy($id);
+
+    return $response;
+  }
 }

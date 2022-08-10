@@ -7,6 +7,9 @@ namespace App\Services;
 use App\DTOs\UploadFileRequestDTO;
 use App\Models\File;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+use function PHPUnit\Framework\returnSelf;
 
 class FileService
 {
@@ -23,20 +26,40 @@ class FileService
         return $file;
     }
 
-    public function download($id){
-        $file = File::where('id', $id)->firstOrFail();
+    /**
+     * @throws Exception
+     */
+    public function download(int $id)
+    {
 
-        $path=storage_path().'/Docs/'.$file->name;
+        $file = File::where('id', $id)->first();
+
+        $path= $file->name;
         
+        Storage::download($path);
+
         return $path;
     
     }
 
-    public function destroy($id){
-        $file = File::where('id', $id)->firstOrFail();
-        $path=storage_path().'/Docs/'.$file->name;
-        
-        return $path;
+    public function destroy(int $id)
+    {
     
+
+        $file = File::where('id', $id)->first();
+        
+        $path= $file->name;
+
+        Storage::delete($path);
+
+        File::find($file->id)->delete();
+
+        return ["deleted"];
+
+    
+
+
+        
+
     }
 }
