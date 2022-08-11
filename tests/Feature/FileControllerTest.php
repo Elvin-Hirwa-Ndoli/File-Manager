@@ -3,13 +3,16 @@
 
 use App\Models\File;
 use App\Models\User;
-use Illuminate\Http\Testing\File as TestingFile;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
 
     $this->user = User::factory()->create();
+
+    Storage::fake('local');
+
+    $this->fakedFile = UploadedFile::fake()->create('quiz4.doc', 100);
 });
 
 
@@ -23,12 +26,10 @@ it('it test if a user can upload file and return true status code', function(){
     ]);
     $finalToken = $token->json();
 
-    Storage::fake('local');
-
-    $fakedFile = UploadedFile::fake()->create('quiz4.doc', 100);
+    
 
     $upload = $this->withHeaders(['Authorization' => "Bearer $finalToken"])->postJson("/api/upload",[
-        "file"=>$fakedFile
+        "file"=>$this->fakedFile
     ]);
 
     expect($upload->json())->toBeArray();
@@ -56,42 +57,65 @@ it('it test if a user can list all files he/she has created and true status code
 });
 
 
-it('can download file', function(){
 
 
-    $file = TestingFile::create('google.pdf',300);
-
-    $path=$file->store('Docs/');
 
 
-    $dbfile = File::factory()->create([
-        'name'=>$path
+it('it test if a user can update file', function(){
+    $this->user = User::factory()->create();
+
+
+    $token = $this->postJson('/api/login', [
+        'email' => $this->user->email,
+        'password' => "password"
     ]);
-    $response = $this->getJson("/api/download/{$dbfile->id}");
+    $finalToken = $token->json();
 
-    $response->assertSuccessful();
+    $fakedStorage = Storage::fake('local');
 
-    Storage::shouldReceive('download')
-    ->with($path)
-    ->andReturn($file);
+    $file = File::factory()->create([
+        "user_id" => $this->user->id
+    ]);
 
+    $fakeFile = UploadedFile::fake()->create('test.pdf', 1000);
+
+     $id = $file->id;
+
+
+    $response = $this->withHeaders(['Authorization' => "Bearer $finalToken"])->postJson("/api/edit/{$id}",[
+        "file"=>$fakeFile
+    ]);
+    expect($response->json())->toBeTrue();
+    $fakedStorage->assertMissing($fakeFile);
+
+   
 });
 
 
-it('ican delete file?', function(){
+
+it('it test if a user can rename file', function(){
+    $this->user = User::factory()->create();
 
 
-    $file = TestingFile::create('google.pdf',300);
-
-    $path=$file->store('Docs/');
-
-
-    $dbfile = File::factory()->create([
-        'name'=>$path
+    $token = $this->postJson('/api/login', [
+        'email' => $this->user->email,
+        'password' => "password"
     ]);
-    $response = $this->delete("/api/delete/{$dbfile->id}");
-  
+    $finalToken = $token->json();
 
-    $response->assertStatus(200);
+
+    $file = File::factory()->create([
+        "user_id" => $this->user->id
+    ]);
+
+    $id = $file->id;
+
+
+    $fakedName ="cheatsheet";
+    $response = $this->withHeaders(['Authorization' => "Bearer $finalToken"])->postJson("/api/rename/{$id}",[
+        "name" => $fakedName
+    ]);
+    expect($response->json())->toBeArray();
+
    
 });
