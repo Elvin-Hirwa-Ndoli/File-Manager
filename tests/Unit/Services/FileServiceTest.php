@@ -155,5 +155,5 @@ it('test delete  method', function(){
 
 
 
-})->only();
+});
 

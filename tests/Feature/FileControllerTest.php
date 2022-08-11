@@ -166,4 +166,4 @@ it ('it can delete',function(){
 
      $response -> assertSuccessful();
     
-})->only();
+});
