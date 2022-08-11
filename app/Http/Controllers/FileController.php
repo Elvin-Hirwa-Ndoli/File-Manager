@@ -9,7 +9,7 @@ use App\Http\Requests\RenameFileRequest;
 use App\Http\Requests\UploadFileRequest;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
@@ -33,16 +33,20 @@ class FileController extends Controller
 
     public function download(FileService $service, int $id)
     {
-        $response = $service->download($id);
+        $path = $service->download($id);
 
-        return $response;
+        Storage::download($path);
     }
 
     public function destroy(FileService $service, int $id)
     {
-        $response = $service->destroy($id);
+        $deleted = $service->destroy($id);
 
-        return $response;
+        if ($deleted) {
+            return response()->json(["message" => "File successfully deleted"]);
+        } else {
+            return response()->json(["message" => "Failed to delete file"]);
+        }
     }
 
 
@@ -51,11 +55,9 @@ class FileController extends Controller
     public function edit(EditFileRequest $request, FileService $service, int $id)
     {
         try {
+            $service->edit($id, $request->dto);
 
-
-            $result = $service->edit($id, $request->dto);
-
-            return response()->json($result, 201);
+            return response()->json(["message" => "File replace successfully"], 201);
         } catch (\Throwable $th) {
 
             return response()->json(["msg" => $th->getMessage()], 404);
@@ -69,9 +71,9 @@ class FileController extends Controller
 
         try {
 
-            $result = $service->rename($id, $request->dto);
+            $service->rename($id, $request->dto);
 
-            return response()->json(["message" => $result], 200);
+            return response()->json(["message" => "Successfully renamed"], 200);
         } catch (\Throwable $th) {
 
 

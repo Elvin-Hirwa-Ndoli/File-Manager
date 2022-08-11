@@ -9,7 +9,6 @@ use App\DTOs\RenameFileRequestDTO;
 use App\DTOs\UploadFileRequestDTO;
 use App\Models\File;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class FileService
@@ -28,7 +27,7 @@ class FileService
 
         $path = $dto->file->store('MyDocument');
 
-        $file = File::create([
+        return File::create([
             'path' => $path,
             'name' => $fileName,
             'extension' => $extension,
@@ -36,8 +35,6 @@ class FileService
             'user_id' => $userID,
 
         ]);
-
-        return $file;
     }
 
 
@@ -45,48 +42,37 @@ class FileService
 
     public function list(int $userID)
     {
-        $file = File::where('user_id', $userID)->paginate(2);
-
-        return $file;
+        return File::where('user_id', $userID)->paginate(2);
     }
 
 
     /**
      * @throws Exception
      */
-    public function download(int $id)
+    public function download(int $id): string
     {
 
         $file = File::where('id', $id)->first();
 
-        $path= $file->name;
-        
-        Storage::download($path);
-
-        return $path;
-    
+        return $file->name;
     }
 
-    public function destroy(int $id)
+    public function destroy(int $id): bool
     {
-    
 
         $file = File::where('id', $id)->first();
-        
-        $path= $file->name;
+
+        $path = $file->name;
 
         Storage::delete($path);
 
-        File::find($file->id)->delete();
-
-        return ["deleted"];
-
+        return File::find($file->id)->delete();
     }
 
     public function edit(
         int $id,
         EditFileRequestDTO $dto
-    ) {
+    ): void {
 
         $path =  $dto->file->store('MyDocument');
 
@@ -104,10 +90,7 @@ class FileService
 
         Storage::delete($old_file->path);
 
-
         File::whereId($id)->update(['path' => $path, 'size' => $size, 'extension' => $extension]);
-
-        return true;
     }
 
     /**
@@ -117,7 +100,7 @@ class FileService
     public function rename(
         int  $id,
         RenameFileRequestDTO $dto
-    ) {
+    ): void {
         $name = $dto->name;
         $old_file =  File::where('id', $id)->first();
 
@@ -127,8 +110,5 @@ class FileService
         }
 
         File::whereId($id)->update(['name' => $name]);
-
-        return true;
     }
 }
-
