@@ -85,7 +85,9 @@ it('it test if a user can update file', function(){
     $response = $this->withHeaders(['Authorization' => "Bearer $finalToken"])->postJson("/api/edit/{$id}",[
         "file"=>$fakeFile
     ]);
-    expect($response->json())->toBeTrue();
+
+
+    expect($response->json())->toBeArray();
     $fakedStorage->assertMissing($fakeFile);
 
    

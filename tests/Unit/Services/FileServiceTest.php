@@ -36,10 +36,8 @@ it("test if the  user can rename file", function () {
 
     $response = $this->service->Rename($file->id, $fileDTO);
 
-    expect($response)
-        ->toBeTrue()
-        ->toHaveKey(0);
-        $this->assertDatabaseHas('files', ["name"=>'cheatsheet']);
+    expect($response)->toBeNull();
+
 });
 
 
@@ -57,7 +55,7 @@ it("test if user can update the file ", function(){
 
    $response = $this->service->edit($file->id, $fileDTO);
 
-   expect($response)->toBeTrue();
+   expect($response)->toBeNull();
 
 });
 
