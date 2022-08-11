@@ -115,7 +115,7 @@ it('test if can list all files in DataBase and return as Expected',   function (
 });
 
 
-    it('test download method',function(){
+it('test download method',function(){
 
     Storage::fake('local');
     
@@ -148,9 +148,14 @@ it('test delete  method', function(){
     
     $response = $this -> service->destroy($dbFile->id);
 
-    expect($response)->toBeArray;
+    expect($response)->toBeTrue();
+
+
+    
+
+ 
 
 
 
-});
+})->only();
 
