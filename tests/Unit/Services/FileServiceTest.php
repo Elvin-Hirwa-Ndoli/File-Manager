@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 
+
 use App\DTOs\UploadFileRequestDTO;
 
 use App\DTOs\EditFileRequestDTO;
@@ -10,8 +11,10 @@ use App\DTOs\RenameFileRequestDTO;
 use App\Models\File;
 use App\Models\User;
 use App\Services\FileService;
+use Illuminate\Http\Testing\File as TestingFile;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+
 
 beforeEach(function () {
 
@@ -19,6 +22,7 @@ beforeEach(function () {
 
     $this->service = new FileService;
 });
+
 
 it("test if the  user can rename file", function () {
     $file = File::factory()->create([
@@ -72,6 +76,7 @@ it("test if can store file path and userID as expected", function(){
     $this->service->upload($fileDTO,$this->user->id);
 
 
+
     $this->assertDatabaseHas('files', [
         'path' => $file->path,
         'name' => $file->name,
@@ -107,6 +112,45 @@ it('test if can list all files in DataBase and return as Expected',   function (
         "to",
         "total"
     ]);
+});
+
+
+    it('test download method',function(){
+
+    Storage::fake('local');
+    
+    $file = TestingFile::create('file.pdf',200);
+    
+    $path = $file->store('local');
+    
+    $dbFile= File::factory()->create([
+        "name"=>$path
+    ]);
+
+     $res=$this->service->download($dbFile->id);
+    
+    expect($res)->toBe($path);
+
+});
+
+
+it('test delete  method', function(){
+
+    Storage::fake('local');
+
+    $file = TestingFile::create('photo.pdf',1000);
+
+    $path = $file->store('local');
+
+    $dbFile = File::factory()->create([
+        'name' =>$path
+    ]);
+    
+    $response = $this -> service->destroy($dbFile->id);
+
+    expect($response)->toBeArray;
+
+
 
 });
 

@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Auth;
 
 class FileController extends Controller
 {
-
-
     public function upload(UploadFileRequest $request, FileService $service)
     {
         $userID = Auth::id();
@@ -26,13 +24,29 @@ class FileController extends Controller
 
     public function listFile(FileService $service)
     {
-
         $userID = Auth::id();
 
         $fileList = $service->list($userID);
 
         return response()->json([$fileList, 200]);
     }
+
+    public function download(FileService $service, int $id)
+    {
+        $response = $service->download($id);
+
+        return $response;
+    }
+
+    public function destroy(FileService $service, int $id)
+    {
+        $response = $service->destroy($id);
+
+        return $response;
+    }
+
+
+
 
     public function edit(EditFileRequest $request, FileService $service, int $id)
     {
@@ -59,6 +73,7 @@ class FileController extends Controller
 
             return response()->json(["message" => $result], 200);
         } catch (\Throwable $th) {
+
 
             return response()->json(["message" => $th->getMessage()], 404);
         }

@@ -9,6 +9,7 @@ use App\DTOs\RenameFileRequestDTO;
 use App\DTOs\UploadFileRequestDTO;
 use App\Models\File;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class FileService
@@ -53,6 +54,35 @@ class FileService
     /**
      * @throws Exception
      */
+    public function download(int $id)
+    {
+
+        $file = File::where('id', $id)->first();
+
+        $path= $file->name;
+        
+        Storage::download($path);
+
+        return $path;
+    
+    }
+
+    public function destroy(int $id)
+    {
+    
+
+        $file = File::where('id', $id)->first();
+        
+        $path= $file->name;
+
+        Storage::delete($path);
+
+        File::find($file->id)->delete();
+
+        return ["deleted"];
+
+    }
+
     public function edit(
         int $id,
         EditFileRequestDTO $dto
@@ -101,3 +131,4 @@ class FileService
         return true;
     }
 }
+
