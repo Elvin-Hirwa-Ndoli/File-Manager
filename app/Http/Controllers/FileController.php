@@ -13,18 +13,30 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 class FileController extends Controller
 {
-   
 
-    public function upload(UploadFileRequest $request, FileService $service)
-    {
-        $userID = Auth::id();
 
-        $uploded = $service->upload($request->dto, $userID);
+  public function upload(UploadFileRequest $request, FileService $service): object
+  {
+    // $folder = uniqid() . '-' . now()->timestamp;
 
-        return response()->json($uploded);
-    }
+    $userID = Auth::id();
 
-    public function listFile()
+    $response = $service->upload($request->dto, $userID);
+
+    return response()->json($response);
+  }
+
+  public function download(FileService $service, int $id)
+  {
+    $response = $service->download($id);
+
+    return $response;
+  }
+
+  public function destroy(FileService $service,int $id)
+  {
+    $response = $service->destroy($id);
+
 
     {
     }
@@ -62,6 +74,5 @@ class FileController extends Controller
         return response()->json(["message" => $th->getMessage()], 404);
      }
 
-    }
-    
+
 }
