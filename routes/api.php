@@ -29,3 +29,7 @@ Route::post('/upload', [FileController::class, 'upload'])->middleware('auth:sanc
 Route::get('/download/{id}', [FileController::class, 'download'])->middleware('auth:sanctum')->whereNumber('id');
 Route::delete('/delete/{id}', [FileController::class, 'destroy'])-> middleware('auth:sanctum')->whereNumber("id");
 
+Route::post('/edit/{id}', [FileController::class,'edit'])->middleware('auth:sanctum');;
+Route::post('/rename/{id}', [FileController::class,'rename'])->middleware('auth:sanctum');
+Route::get('/list', [FileController::class, 'listFile'])->middleware('auth:sanctum');
+
