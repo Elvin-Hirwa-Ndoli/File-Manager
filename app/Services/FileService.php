@@ -6,10 +6,7 @@ namespace App\Services;
 
 use App\DTOs\UploadFileRequestDTO;
 use App\Models\File;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
-use function PHPUnit\Framework\returnSelf;
 
 class FileService
 {
